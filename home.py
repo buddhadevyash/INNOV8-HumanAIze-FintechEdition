@@ -55,4 +55,4 @@ def home_page():
     st.write("Select a page from the sidebar to get started!")
 
     st.markdown("---")
-    st.write("Made with ☕ and 💻 by Harsh, Vatsal & Yash.")
+    st.write("Made with ☕ and 💻 by Akshansh, Harsh, Vatsal & Yash.")
