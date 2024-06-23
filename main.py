@@ -8,7 +8,7 @@ from make_your_own_plan_page import make_your_own_plan_page
 from home import home_page  # Import the home_page function from home.py
 
 def main():
-    st.title("Insurance Dashboard")
+    st.title("Revolutionizing Insurance")
 
     # Sidebar navigation
     page = st.sidebar.selectbox(
