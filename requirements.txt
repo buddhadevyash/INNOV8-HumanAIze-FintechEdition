@@ -7,3 +7,5 @@ replicate
 tensorflow
 keras
 scikit-learn
+torch
+torchvision
