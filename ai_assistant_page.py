@@ -28,6 +28,23 @@ def load_data():
 def clear_chat_history():
     st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
 
+# Function to predict discount based on fitness score
+def predict_discount(fitness_score):
+    if fitness_score >= 90:
+        return 30  # 30% discount
+    elif fitness_score >= 80:
+        return 25  # 25% discount
+    elif fitness_score >= 70:
+        return 20  # 20% discount
+    elif fitness_score >= 60:
+        return 15  # 15% discount
+    elif fitness_score >= 50:
+        return 10  # 10% discount
+    elif fitness_score >= 40:
+        return 5   # 5% discount
+    else:
+        return 0   # No discount
+
 # Function to generate AI assistant response
 def generate_insurance_assistant_response(prompt_input, llm, temperature, top_p, max_length, fine_tuning_data, fitness_discount_data):
     string_dialogue = "Talking to a consultant with expertise in personal finance, insurance, and the responses must be crisp and short.\n\n"
@@ -40,11 +57,8 @@ def generate_insurance_assistant_response(prompt_input, llm, temperature, top_p,
 
     try:
         user_fitness_score = float(prompt_input)
-        if user_fitness_score in fitness_discount_data:
-            discount = fitness_discount_data[user_fitness_score]
-            return f"Your fitness score is {user_fitness_score}. Based on this, you get {discount}% discount."
-        else:
-            return "I'm sorry, I couldn't find any discount information for your fitness score."
+        discount = predict_discount(user_fitness_score)
+        return f"Your fitness score is {user_fitness_score}. Based on this, you get {discount}% discount."
     except ValueError:
         pass
 
@@ -123,3 +137,7 @@ def ai_assistant_page():
         response = generate_insurance_assistant_response(user_input, llm, temperature, top_p, max_length, fine_tuning_data, fitness_discount_data)
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.experimental_rerun()
+
+# Run the app
+if __name__ == "__main__":
+    ai_assistant_page()
