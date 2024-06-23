@@ -57,9 +57,11 @@ def choose_base_plans_page():
         return policy
 
     # Input fields
-    user_age = st.number_input("Enter your age in days:", min_value=0, max_value=36500, step=1)
+    user_age = st.number_input("Enter your age in years:", min_value=0, max_value=100, step=1)
+    
+    user_age_in_days = user_age * 365
 
-    if user_age < 6570:
+    if user_age_in_days < 6570:
         st.write('The best insurance policy for you is: LIC')
     else:
         user_income = st.number_input("Enter your income:", min_value=0, step=1)
