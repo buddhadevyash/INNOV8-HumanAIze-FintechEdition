@@ -66,7 +66,7 @@ def choose_base_plans_page():
     else:
         user_income = st.number_input("Enter your income:", min_value=0, step=1)
         user_occupation = st.selectbox("Select your occupation:", occupations)
-        best_policy = predict_policy(user_age, user_income, user_occupation)
+        best_policy = predict_policy(user_age_in_days, user_income, user_occupation)
         st.write(f'The best insurance policy for you is: {best_policy}')
 
     # Plot: No of premiums paid vs premium
