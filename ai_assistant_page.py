@@ -99,7 +99,7 @@ def ai_assistant_page():
     # Define sidebar for AI Assistant configurations
     with st.sidebar:
         st.title('🏛️🔍 AI-Assistant Settings')
-        replicate_api = 'r8_JXTcyDv0lcKFpDKjqvUe79jBLTdHd6Q3ic4aV'
+        replicate_api = 'r8_XNASR8R9aHF0y29HENg7WV7iWec9gzZ2paqp0'
         st.success('API key already provided!', icon='✅')
         os.environ['REPLICATE_API_TOKEN'] = replicate_api
 
