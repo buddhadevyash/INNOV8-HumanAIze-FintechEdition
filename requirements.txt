@@ -9,3 +9,7 @@ keras
 scikit-learn
 torch
 torchvision
+streamlit
+pandas
+replicate
+python-dotenv

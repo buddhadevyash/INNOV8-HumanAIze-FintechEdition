@@ -2,12 +2,11 @@ import streamlit as st
 import pandas as pd
 import os
 import replicate
-from dotenv import load_dotenv
 import logging
 import json
 
 # Load environment variables from .env file
-load_dotenv()
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
