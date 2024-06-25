@@ -5,6 +5,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+import plotly.express as px
 
 # Function to display the Home page
 def home_page():
@@ -85,6 +86,25 @@ def fitness_score_page():
 
     # Display model performance metrics
     display_model_metrics(df, rf_regressor)
+
+    # Create DataFrame for visualization
+    viz_df = df.copy()
+    viz_df['Predicted Discount'] = viz_df['Fitness Score'].apply(predict_discount)
+
+    # Create 3D scatter plot
+    fig = px.scatter_3d(viz_df, x='Fitness Score', y='Predicted Discount', z='Age',
+                        color='Predicted Discount', size='Fitness Score',
+                        hover_data=['Name', 'Age'], title='3D Scatter Plot of Fitness Score, Predicted Discount, and Age')
+
+    fig.update_layout(scene = dict(
+                        xaxis_title='Fitness Score',
+                        yaxis_title='Predicted Discount',
+                        zaxis_title='Age'),
+                        width=800,
+                        height=800)
+
+    # Display the plot in Streamlit
+    st.plotly_chart(fig)
 
 # Function to get fitness score and predicted discount
 def get_fitness_score_and_discount(df, rf_regressor, name, age):
