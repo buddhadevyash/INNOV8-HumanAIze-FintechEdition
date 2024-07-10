@@ -6,8 +6,21 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import plotly.express as px
+<<<<<<< HEAD
 import base64
 from fpdf import FPDF
+=======
+
+# Function to display the Home page
+def home_page():
+    st.title('Home Page')
+    st.write("This is the home page content.")
+
+# Function to display the AI Assistant page
+def ai_assistant_page():
+    st.title('AI Assistant Page')
+    st.write("This is the AI assistant page content.")
+>>>>>>> 3be87cfa897a55e64a18f5708c552b69febce075
 
 # Function to load data and model, and preprocess data
 @st.cache(allow_output_mutation=True)
@@ -82,6 +95,29 @@ def create_pdf_certificate(data, fitness_score):
 
     return pdf.output(dest='S').encode('latin-1')
 
+<<<<<<< HEAD
+=======
+    # Create DataFrame for visualization
+    viz_df = df.copy()
+    viz_df['Predicted Discount'] = viz_df['Fitness Score'].apply(predict_discount)
+
+    # Create 3D scatter plot
+    fig = px.scatter_3d(viz_df, x='Fitness Score', y='Predicted Discount', z='Age',
+                        color='Predicted Discount', size='Fitness Score',
+                        hover_data=['Name', 'Age'], title='3D Scatter Plot of Fitness Score, Predicted Discount, and Age')
+
+    fig.update_layout(scene = dict(
+                        xaxis_title='Fitness Score',
+                        yaxis_title='Predicted Discount',
+                        zaxis_title='Age'),
+                        width=800,
+                        height=800)
+
+    # Display the plot in Streamlit
+    st.plotly_chart(fig)
+
+# Function to get fitness score and predicted discount
+>>>>>>> 3be87cfa897a55e64a18f5708c552b69febce075
 def get_fitness_score_and_discount(df, rf_regressor, name, age):
     row = df[(df['Name'] == name) & (df['Age'] == age)]
     if not row.empty:

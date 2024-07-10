@@ -71,4 +71,4 @@ def home_page():
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("<p class='footer'>Made with ☕ and 💻 by Akshansh, Harsh, Vatsal & Yash</p>", unsafe_allow_html=True)
+    st.markdown("<p class='footer'>Made with ☕ and 💻 by Harsh, Vatsal & Yash</p>", unsafe_allow_html=True)
