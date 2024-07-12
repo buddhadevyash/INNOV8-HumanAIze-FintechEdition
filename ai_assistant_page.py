@@ -1,8 +1,15 @@
 import streamlit as st
 import pandas as pd
 import os
-import replicate
+import io
+from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
+import speech_recognition as sr
+from streamlit_webrtc import webrtc_streamer, WebRtcMode
+import queue
+import numpy as np
+import pydub
+import av
 
 # Load environment variables from .env file
 load_dotenv()
@@ -50,11 +57,11 @@ def predict_discount(fitness_score):
         return 0   # No discount
 
 # Function to generate AI assistant response
-def generate_insurance_assistant_response(prompt_input, llm, temperature, top_p, max_length, fine_tuning_data, fitness_discount_data):
-    string_dialogue = "Talking to a consultant with expertise in personal finance, insurance, and the responses must be crisp and short.\n\n"
+def generate_insurance_assistant_response(prompt_input, client, fine_tuning_data, fitness_discount_data):
+    system_message = "You are a consultant with expertise in personal finance and insurance. Provide crisp and short responses."
 
     if fine_tuning_data:
-        string_dialogue += "Fine-tuning data:\n" + fine_tuning_data + "\n\n"
+        system_message += f"\n\nFine-tuning data:\n{fine_tuning_data}"
 
     if "fitness score" in prompt_input.lower() or "discount" in prompt_input.lower():
         return "Please provide your fitness score to get information about the discount you qualify for."
@@ -66,10 +73,33 @@ def generate_insurance_assistant_response(prompt_input, llm, temperature, top_p,
     except ValueError:
         pass
 
-    output = replicate.run(llm, 
-                           input={"prompt": f"{string_dialogue} {prompt_input} Assistant: ",
-                                  "temperature": temperature, "top_p": top_p, "max_length": max_length, "repetition_penalty": 1})
-    return ''.join(output)
+    messages = [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": prompt_input}
+    ]
+
+    response = ""
+    for message in client.chat_completion(
+            messages=messages,
+            max_tokens=120,
+            stream=True
+    ):
+        response += message.choices[0].delta.content or ""
+
+    return response
+
+# Function to transcribe audio
+def transcribe_audio(audio_bytes):
+    try:
+        r = sr.Recognizer()
+        audio_file = sr.AudioFile(io.BytesIO(audio_bytes))
+        with audio_file as source:
+            audio_data = r.record(source)
+        text = r.recognize_google(audio_data, key=None)
+        return text
+    except Exception as e:
+        st.error(f"Error transcribing audio: {e}")
+        return None
 
 # Define the AI Assistant page
 def ai_assistant_page():
@@ -103,22 +133,17 @@ def ai_assistant_page():
     # Define sidebar for AI Assistant configurations
     with st.sidebar:
         st.title('🏛️🔍 AI-Assistant Settings')
-        replicate_api = os.environ.get('REPLICATE_API_TOKEN')
-        if replicate_api:
+        hf_api_token = "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"
+        if hf_api_token:
             st.success('API key loaded from environment variable!', icon='✅')
         else:
-            st.error('API key not found. Please set the REPLICATE_API_TOKEN environment variable.', icon='🚨')
-        
-        # Only set the environment variable if it's not already set
-        if replicate_api:
-            os.environ['REPLICATE_API_TOKEN'] = replicate_api
+            st.error('API key not found. Please set the HUGGINGFACE_API_TOKEN environment variable.', icon='🚨')
 
-        st.subheader('Model and parameters')
-        selected_model = st.selectbox('Choose a Llama2 model', ['Llama2-7B', 'Llama2-13B'], key='selected_model')
-        llm = 'a16z-infra/llama7b-v2-chat:4f0a4744c7295c024a1de15e1a63c880d3da035fa1f49bfd344fe076074c8eea' if selected_model == 'Llama2-7B' else 'a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5'
-        temperature = st.slider('Temperature', min_value=0.01, max_value=5.0, value=0.1, step=0.01)
-        top_p = st.slider('Top P', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
-        max_length = st.slider('Max Length', min_value=32, max_value=128, value=120, step=8)
+        # Initialize the InferenceClient
+        client = InferenceClient(
+            "mistralai/Mixtral-8x7B-Instruct-v0.1",
+            token=hf_api_token
+        )
 
         st.button('Clear Chat History', on_click=clear_chat_history)
 
@@ -137,6 +162,49 @@ def ai_assistant_page():
             </div>
             """, unsafe_allow_html=True)
 
+    audio_buffer = queue.Queue()
+
+    def audio_callback(frame: av.AudioFrame):
+        audio_buffer.put(frame.to_ndarray())
+
+    # WebRTC audio recorder
+    webrtc_ctx = webrtc_streamer(
+        key="speech-to-text",
+        audio_receiver_size=1024,
+        mode=WebRtcMode.SENDRECV,
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        media_stream_constraints={"video": False, "audio": True},
+        audio_frame_callback=audio_callback
+    )
+
+    if webrtc_ctx.state.playing:
+        if st.button("Transcribe"):
+            audio_frames = []
+            while not audio_buffer.empty():
+                audio_frames.append(audio_buffer.get())
+
+            if len(audio_frames) > 0:
+                audio_data = np.concatenate(audio_frames, axis=0)
+                audio_segment = pydub.AudioSegment(
+                    audio_data.tobytes(),
+                    frame_rate=16000,
+                    sample_width=audio_data.dtype.itemsize,
+                    channels=1
+                )
+                audio_bytes = audio_segment.export(format="wav").read()
+
+                speech_text = transcribe_audio(audio_bytes)
+                if speech_text:
+                    st.session_state.messages.append({"role": "user", "content": speech_text})
+                    response = generate_insurance_assistant_response(speech_text, client, fine_tuning_data,
+                                                                     fitness_discount_data)
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    st.experimental_rerun()
+                else:
+                    st.warning("No audio recorded. Please speak and try again.")
+            else:
+                st.warning("No audio recorded. Please speak and try again.")
+
     # Handle user input and generate responses
     with st.form(key='chat_form', clear_on_submit=True):
         user_input = st.text_input("Type your message here:", key="user_input")
@@ -144,7 +212,7 @@ def ai_assistant_page():
 
     if submit_button and user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
-        response = generate_insurance_assistant_response(user_input, llm, temperature, top_p, max_length, fine_tuning_data, fitness_discount_data)
+        response = generate_insurance_assistant_response(user_input, client, fine_tuning_data, fitness_discount_data)
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.experimental_rerun()
 
