@@ -1,11 +1,14 @@
-# main.py
-
 import streamlit as st
+
+# Set page config at the very top
+st.set_page_config(page_title="Dashboard", page_icon="🌍", layout="wide")
+
 from ai_assistant_page import ai_assistant_page
 from fitness_score_page import fitness_score_page
 from choose_base_plans_page import choose_base_plans_page
 from make_your_own_plan_page import make_your_own_plan_page
-from home import home_page  # Import the home_page function from home.py
+from home import home_page
+from Bussiness_Dashboard.Home import Home  # Import the Home function from Business_Dashboard/Home.py
 
 def main():
     st.title("Revolutionizing Insurance with SmartSure")
@@ -13,7 +16,7 @@ def main():
     # Sidebar navigation
     page = st.sidebar.selectbox(
         "Select a page",
-        ("Home", "AI Assistant", "Fitness Score", "Choose from Base Plans", "Make Your Own Plan")
+        ("Home", "AI Assistant", "Fitness Score", "Choose from Base Plans", "Make Your Own Plan", "Business Dashboard")
     )
 
     if page == "Home":
@@ -26,6 +29,8 @@ def main():
         choose_base_plans_page()
     elif page == "Make Your Own Plan":
         make_your_own_plan_page()
+    elif page == "Business Dashboard":
+        Home()  # Call the Home function from Business_Dashboard/Home.py
 
 if __name__ == "__main__":
     main()
