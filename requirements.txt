@@ -13,3 +13,8 @@ streamlit
 pandas
 replicate
 python-dotenv
+huggingface-hub
+SpeechRecognition
+streamlit-webrtc
+pydub
+av
