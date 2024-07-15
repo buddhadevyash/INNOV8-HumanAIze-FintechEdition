@@ -5,11 +5,10 @@ import io
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import speech_recognition as sr
-from streamlit_webrtc import webrtc_streamer, WebRtcMode
-import queue
-import numpy as np
-import pydub
-import av
+from gtts import gTTS
+import pyaudio
+import wave
+import tempfile
 
 # Load environment variables from .env file
 load_dotenv()
@@ -89,24 +88,68 @@ def generate_insurance_assistant_response(prompt_input, client, fine_tuning_data
     return response
 
 # Function to transcribe audio
-def transcribe_audio(audio_bytes):
+def transcribe_audio(audio_file_path):
     try:
         r = sr.Recognizer()
-        audio_file = sr.AudioFile(io.BytesIO(audio_bytes))
-        with audio_file as source:
+        with sr.AudioFile(audio_file_path) as source:
             audio_data = r.record(source)
-        text = r.recognize_google(audio_data, key=None)
+        text = r.recognize_google(audio_data)
         return text
     except Exception as e:
         st.error(f"Error transcribing audio: {e}")
         return None
+
+# Function to convert text to speech
+def text_to_speech(text):
+    tts = gTTS(text=text, lang='en')
+    audio_bytes = io.BytesIO()
+    tts.write_to_fp(audio_bytes)
+    audio_bytes.seek(0)
+    return audio_bytes.getvalue()
+
+# Function to record audio
+def record_audio(device_index, duration=5):
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 44100
+    RECORD_SECONDS = duration
+
+    p = pyaudio.PyAudio()
+
+    stream = p.open(format=FORMAT,
+                    channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    input_device_index=device_index,
+                    frames_per_buffer=CHUNK)
+
+    frames = []
+
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio_file:
+        wf = wave.open(temp_audio_file.name, 'wb')
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(p.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(frames))
+        wf.close()
+
+    return temp_audio_file.name
 
 # Define the AI Assistant page
 def ai_assistant_page():
     st.title('AI Assistant')
     st.write("Your personal insurance and finance expert")
 
-    # Custom CSS for chat containers
+    # Custom CSS for chat containers and buttons
     st.markdown("""
     <style>
     .user-container {
@@ -123,6 +166,23 @@ def ai_assistant_page():
     }
     .chat-text {
         color: #ffffff;
+    }
+    .stButton > button {
+        width: 100%;
+        height: 40px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .stButton > button:hover {
+        background-color: #45a049;
+    }
+    .button-container {
+        display: flex;
+        justify-content: space-between;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -147,6 +207,19 @@ def ai_assistant_page():
 
         st.button('Clear Chat History', on_click=clear_chat_history)
 
+        # Get available input devices
+        p = pyaudio.PyAudio()
+        input_devices = []
+        for i in range(p.get_device_count()):
+            dev = p.get_device_info_by_index(i)
+            if dev.get('maxInputChannels') > 0:
+                input_devices.append(dev)
+
+        # Device selection
+        device_names = [f"{dev['index']}: {dev['name']}" for dev in input_devices]
+        selected_device = st.selectbox("Select input device:", device_names)
+        selected_device_index = int(selected_device.split(':')[0])
+
     # Initialize session state for messages
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
@@ -154,63 +227,43 @@ def ai_assistant_page():
     # Display chat history
     chat_container = st.container()
     with chat_container:
-        for message in st.session_state.messages:
+        for i, message in enumerate(st.session_state.messages):
             container_class = "user-container" if message['role'] == "user" else "assistant-container"
-            st.markdown(f"""
-            <div class="{container_class}">
-                <p class="chat-text"><strong>{'You' if message['role'] == 'user' else 'Assistant'}:</strong> {message['content']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-    audio_buffer = queue.Queue()
-
-    def audio_callback(frame: av.AudioFrame):
-        audio_buffer.put(frame.to_ndarray())
-
-    # WebRTC audio recorder
-    webrtc_ctx = webrtc_streamer(
-        key="speech-to-text",
-        audio_receiver_size=1024,
-        mode=WebRtcMode.SENDRECV,
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-        media_stream_constraints={"video": False, "audio": True},
-        audio_frame_callback=audio_callback
-    )
-
-    if webrtc_ctx.state.playing:
-        if st.button("Transcribe"):
-            audio_frames = []
-            while not audio_buffer.empty():
-                audio_frames.append(audio_buffer.get())
-
-            if len(audio_frames) > 0:
-                audio_data = np.concatenate(audio_frames, axis=0)
-                audio_segment = pydub.AudioSegment(
-                    audio_data.tobytes(),
-                    frame_rate=16000,
-                    sample_width=audio_data.dtype.itemsize,
-                    channels=1
-                )
-                audio_bytes = audio_segment.export(format="wav").read()
-
-                speech_text = transcribe_audio(audio_bytes)
-                if speech_text:
-                    st.session_state.messages.append({"role": "user", "content": speech_text})
-                    response = generate_insurance_assistant_response(speech_text, client, fine_tuning_data,
-                                                                     fitness_discount_data)
-                    st.session_state.messages.append({"role": "assistant", "content": response})
-                    st.experimental_rerun()
-                else:
-                    st.warning("No audio recorded. Please speak and try again.")
-            else:
-                st.warning("No audio recorded. Please speak and try again.")
+            col1, col2 = st.columns([0.9, 0.1])
+            with col1:
+                st.markdown(f"""
+                <div class="{container_class}">
+                    <p class="chat-text"><strong>{'You' if message['role'] == 'user' else 'Assistant'}:</strong> {message['content']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+            with col2:
+                audio_button_label = f"Play Audio {i}"
+                if st.button("Play", key=audio_button_label):
+                    audio_bytes = text_to_speech(message['content'])
+                    st.audio(audio_bytes, format="audio/mp3")
 
     # Handle user input and generate responses
-    with st.form(key='chat_form', clear_on_submit=True):
-        user_input = st.text_input("Type your message here:", key="user_input")
-        submit_button = st.form_submit_button("Send")
+    user_input = st.text_input("Type your message here:", key="user_input")
+    col1, col2 = st.columns([0.5, 0.5])
+    with col1:
+        send_button = st.button("Send")
+    with col2:
+        speak_button = st.button("Speak")
 
-    if submit_button and user_input:
+    if speak_button:
+        st.write("Recording... Speak now.")
+        audio_file_path = record_audio(selected_device_index)
+        transcribed_text = transcribe_audio(audio_file_path)
+        if transcribed_text:
+            st.session_state.messages.append({"role": "user", "content": transcribed_text})
+            response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
+            st.session_state.messages.append({"role": "assistant", "content": response})
+            os.unlink(audio_file_path)  # Delete the temporary audio file
+            st.experimental_rerun()
+        else:
+            st.error("Failed to transcribe audio. Please try again.")
+
+    if send_button and user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
         response = generate_insurance_assistant_response(user_input, client, fine_tuning_data, fitness_discount_data)
         st.session_state.messages.append({"role": "assistant", "content": response})

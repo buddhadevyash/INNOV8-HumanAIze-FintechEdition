@@ -18,3 +18,9 @@ SpeechRecognition
 streamlit-webrtc
 pydub
 av
+sounddevice
+numpy
+scipy
+sounddevice
+numpy
+scipy
