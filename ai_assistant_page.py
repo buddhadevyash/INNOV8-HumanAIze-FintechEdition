@@ -2,14 +2,13 @@ import streamlit as st
 import pandas as pd
 import os
 import io
-import sounddevice as sd
-import numpy as np
-import wave
-import tempfile
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import speech_recognition as sr
 from gtts import gTTS
+import pyaudio
+import wave
+import tempfile
 
 # Load environment variables from .env file
 load_dotenv()
@@ -109,20 +108,41 @@ def text_to_speech(text):
     return audio_bytes.getvalue()
 
 # Function to record audio
-def record_audio(duration=5, samplerate=44100):
-    st.write("Recording...")
-    # Record audio
-    audio_data = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='int16')
-    sd.wait()  # Wait until recording is finished
+def record_audio(device_index, duration=5):
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 44100
+    RECORD_SECONDS = duration
 
-    # Save audio to a temporary file
+    p = pyaudio.PyAudio()
+
+    stream = p.open(format=FORMAT,
+                    channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    input_device_index=device_index,
+                    frames_per_buffer=CHUNK)
+
+    frames = []
+
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio_file:
-        with wave.open(temp_audio_file.name, 'wb') as wf:
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(samplerate)
-            wf.writeframes(audio_data.tobytes())
-        return temp_audio_file.name
+        wf = wave.open(temp_audio_file.name, 'wb')
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(p.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(frames))
+        wf.close()
+
+    return temp_audio_file.name
 
 # Define the AI Assistant page
 def ai_assistant_page():
@@ -187,8 +207,18 @@ def ai_assistant_page():
 
         st.button('Clear Chat History', on_click=clear_chat_history)
 
+        # Get available input devices
+        p = pyaudio.PyAudio()
+        input_devices = []
+        for i in range(p.get_device_count()):
+            dev = p.get_device_info_by_index(i)
+            if dev.get('maxInputChannels') > 0:
+                input_devices.append(dev)
+
         # Device selection
-        st.write("Select an input device in your system settings.")
+        device_names = [f"{dev['index']}: {dev['name']}" for dev in input_devices]
+        selected_device = st.selectbox("Select input device:", device_names)
+        selected_device_index = int(selected_device.split(':')[0])
 
     # Initialize session state for messages
     if "messages" not in st.session_state:
@@ -222,7 +252,7 @@ def ai_assistant_page():
 
     if speak_button:
         st.write("Recording... Speak now.")
-        audio_file_path = record_audio()
+        audio_file_path = record_audio(selected_device_index)
         transcribed_text = transcribe_audio(audio_file_path)
         if transcribed_text:
             st.session_state.messages.append({"role": "user", "content": transcribed_text})
@@ -241,4 +271,4 @@ def ai_assistant_page():
 
 # Run the app
 if __name__ == "__main__":
-    ai_assistant_page()
+    ai_assist9ant_page()
