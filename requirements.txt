@@ -11,6 +11,7 @@ replicate
 huggingface_hub
 python-dotenv
 gtts
+sounddevice
 streamlit-card
 Pillow
 folium
