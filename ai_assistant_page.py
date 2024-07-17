@@ -6,9 +6,10 @@ from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import speech_recognition as sr
 from gtts import gTTS
-import pyaudio
-import wave
 import tempfile
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, ClientSettings
+import av
+from pydub import AudioSegment
 
 # Load environment variables from .env file
 load_dotenv()
@@ -88,15 +89,27 @@ def generate_insurance_assistant_response(prompt_input, client, fine_tuning_data
     return response
 
 # Function to transcribe audio
-def transcribe_audio(audio_file_path):
+def transcribe_audio(audio_data):
     try:
         r = sr.Recognizer()
-        with sr.AudioFile(audio_file_path) as source:
+        
+        # Convert audio to WAV
+        if isinstance(audio_data, bytes):
+            audio = AudioSegment.from_file(io.BytesIO(audio_data))
+        else:
+            audio = AudioSegment.from_file(audio_data)
+        
+        wav_data = io.BytesIO()
+        audio.export(wav_data, format="wav")
+        wav_data.seek(0)
+        
+        with sr.AudioFile(wav_data) as source:
             audio_data = r.record(source)
+        
         text = r.recognize_google(audio_data)
         return text
     except Exception as e:
-        st.error(f"Error transcribing audio: {e}")
+        st.error(f"Error transcribing audio: {str(e)}")
         return None
 
 # Function to convert text to speech
@@ -107,48 +120,14 @@ def text_to_speech(text):
     audio_bytes.seek(0)
     return audio_bytes.getvalue()
 
-# Function to record audio
-def record_audio(device_index, duration=5):
-    CHUNK = 1024
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 1
-    RATE = 44100
-    RECORD_SECONDS = duration
-
-    p = pyaudio.PyAudio()
-
-    stream = p.open(format=FORMAT,
-                    channels=CHANNELS,
-                    rate=RATE,
-                    input=True,
-                    input_device_index=device_index,
-                    frames_per_buffer=CHUNK)
-
-    frames = []
-
-    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = stream.read(CHUNK)
-        frames.append(data)
-
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio_file:
-        wf = wave.open(temp_audio_file.name, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
-        wf.close()
-
-    return temp_audio_file.name
-
 # Define the AI Assistant page
 def ai_assistant_page():
     st.title('AI Assistant')
     st.write("Your personal insurance and finance expert")
 
+    if "file_processed" not in st.session_state:
+        st.session_state.file_processed = False
+    
     # Custom CSS for chat containers and buttons
     st.markdown("""
     <style>
@@ -207,19 +186,6 @@ def ai_assistant_page():
 
         st.button('Clear Chat History', on_click=clear_chat_history)
 
-        # Get available input devices
-        p = pyaudio.PyAudio()
-        input_devices = []
-        for i in range(p.get_device_count()):
-            dev = p.get_device_info_by_index(i)
-            if dev.get('maxInputChannels') > 0:
-                input_devices.append(dev)
-
-        # Device selection
-        device_names = [f"{dev['index']}: {dev['name']}" for dev in input_devices]
-        selected_device = st.selectbox("Select input device:", device_names)
-        selected_device_index = int(selected_device.split(':')[0])
-
     # Initialize session state for messages
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
@@ -244,24 +210,68 @@ def ai_assistant_page():
 
     # Handle user input and generate responses
     user_input = st.text_input("Type your message here:", key="user_input")
-    col1, col2 = st.columns([0.5, 0.5])
+    col1, col2= st.columns([0.5, 0.5])
     with col1:
         send_button = st.button("Send")
     with col2:
         speak_button = st.button("Speak")
 
-    if speak_button:
-        st.write("Recording... Speak now.")
-        audio_file_path = record_audio(selected_device_index)
-        transcribed_text = transcribe_audio(audio_file_path)
-        if transcribed_text:
-            st.session_state.messages.append({"role": "user", "content": transcribed_text})
-            response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
-            st.session_state.messages.append({"role": "assistant", "content": response})
-            os.unlink(audio_file_path)  # Delete the temporary audio file
-            st.experimental_rerun()
-        else:
-            st.error("Failed to transcribe audio. Please try again.")
+  
+    uploaded_file = st.file_uploader("Facing issues recording? Upload an audio file instead:", type=['wav', 'mp3', 'ogg', 'm4a', 'flac'])
+
+    if uploaded_file is not None and not st.session_state.file_processed:
+        try:
+            # Display audio player
+            st.audio(uploaded_file)
+            
+            # Read the file
+            audio_bytes = uploaded_file.read()
+            
+            # Transcribe the audio
+            transcribed_text = transcribe_audio(audio_bytes)
+            
+            if transcribed_text:
+                st.write(f"Transcribed text: {transcribed_text}")
+                st.session_state.messages.append({"role": "user", "content": transcribed_text})
+                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
+                st.session_state.messages.append({"role": "assistant", "content": response})
+                st.session_state.file_processed = True
+            else:
+                st.error("Failed to transcribe audio. Please try again with a different file.")
+        except Exception as e:
+            st.error(f"Error processing audio file: {str(e)}")
+    else:
+        st.session_state.file_processed = False
+
+    if st.button("New audio"):
+        st.session_state.file_processed = False
+    
+    # Use webrtc to record audio
+    webrtc_ctx = webrtc_streamer(
+        key="speech-to-text",
+        mode=WebRtcMode.SENDONLY,
+        client_settings=ClientSettings(
+            media_stream_constraints={
+                "audio": True,
+                "video": False
+            }
+        ),
+        sendback_audio=False,
+        audio_receiver_size=1024,
+    )
+
+    if webrtc_ctx.audio_receiver:
+        audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
+        if audio_frames:
+            audio_data = b"".join([af.to_ndarray().tobytes() for af in audio_frames])
+            transcribed_text = transcribe_audio(audio_data)
+            if transcribed_text:
+                st.session_state.messages.append({"role": "user", "content": transcribed_text})
+                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
+                st.session_state.messages.append({"role": "assistant", "content": response})
+                st.experimental_rerun()
+            else:
+                st.error("Failed to transcribe audio. Please try again.")
 
     if send_button and user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
@@ -272,4 +282,3 @@ def ai_assistant_page():
 # Run the app
 if __name__ == "__main__":
     ai_assistant_page()
-
