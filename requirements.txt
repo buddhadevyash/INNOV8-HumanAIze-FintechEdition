@@ -10,7 +10,6 @@ matplotlib
 replicate
 huggingface_hub
 python-dotenv
-speech_recognition
 gtts
 pyaudio
 streamlit-card
