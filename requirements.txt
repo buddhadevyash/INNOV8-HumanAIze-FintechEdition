@@ -12,6 +12,7 @@ huggingface_hub
 python-dotenv
 gtts
 sounddevice
+pyaudio
 streamlit-card
 Pillow
 folium
