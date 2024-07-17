@@ -16,8 +16,8 @@ load_dotenv()
 
 # Function to load fine-tuning data and bot_score.csv
 def load_data():
-    fine_tuning_file_path = 'D:/bot/tune_data.txt'
-    csv_file_path = 'D:/bot/bot_score.csv'
+    fine_tuning_file_path = 'tune_data.txt'
+    csv_file_path = 'bot_score.csv'
 
     fine_tuning_data = ""
     fitness_discount_data = {}
