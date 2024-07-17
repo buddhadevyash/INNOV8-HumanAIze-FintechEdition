@@ -6,10 +6,7 @@ from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import speech_recognition as sr
 from gtts import gTTS
-import sounddevice as sd
-import numpy as np
 import tempfile
-import wave
 
 # Load environment variables from .env file
 load_dotenv()
@@ -108,20 +105,6 @@ def text_to_speech(text):
     audio_bytes.seek(0)
     return audio_bytes.getvalue()
 
-# Function to record audio
-def record_audio(duration=5):
-    samplerate = 44100
-    recording = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='int16')
-    sd.wait()
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio_file:
-        with wave.open(temp_audio_file.name, 'wb') as wf:
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(samplerate)
-            wf.writeframes(recording.tobytes())
-        return temp_audio_file.name
-
 # Define the AI Assistant page
 def ai_assistant_page():
     st.title('AI Assistant')
@@ -213,11 +196,14 @@ def ai_assistant_page():
     with col1:
         send_button = st.button("Send")
     with col2:
-        speak_button = st.button("Speak")
+        upload_button = st.file_uploader("Upload audio file:", type=["wav"])
 
-    if speak_button:
-        st.write("Recording... Speak now.")
-        audio_file_path = record_audio()
+    if upload_button:
+        st.write("Processing uploaded audio...")
+        audio_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".wav").name
+        with open(audio_file_path, "wb") as f:
+            f.write(upload_button.getvalue())
+
         transcribed_text = transcribe_audio(audio_file_path)
         if transcribed_text:
             st.session_state.messages.append({"role": "user", "content": transcribed_text})
