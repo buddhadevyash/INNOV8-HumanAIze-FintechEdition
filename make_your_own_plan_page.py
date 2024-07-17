@@ -92,7 +92,7 @@ professions = [
 # List of coverage amounts for Life Insurance
 coverage_amounts = ['50L', '1Cr', '1.5Cr', '2Cr', '2.5Cr', '3Cr', '3.5Cr', '4Cr', '4.5Cr', '5Cr']
 
-def main():
+def make_your_own_plan_page():
     st.title("Personalized Health and Life Insurance Plan Generator")
 
     st.header("Enter your details:")
