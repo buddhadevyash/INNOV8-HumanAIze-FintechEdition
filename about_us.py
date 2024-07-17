@@ -18,7 +18,7 @@ def about_us_page():
         "member2": {
             "name": "Yash Buddhadev",
             "sr": "Team Member 2",
-            "phone": "0987654321 (Mobile)",
+            "phone": "8369306269",
             "mail": "yashbuddhadev21@gmail.com",
             "linkedIn": "https://www.linkedin.com/in/yash-buddhadev-889955289/",
             "github": "https://github.com/buddhadevyash",
@@ -36,7 +36,7 @@ def about_us_page():
         "akshansh": {
             "name": "Akshansh Dwivedi",
             "sr": "Team Member 4",
-            "phone": "8097949196 (Mobile)",
+            "phone": "8097949196",
             "mail": "akshansh2624@gmail.com",
             "linkedIn": "https://www.linkedin.com/in/akshansh2624",
             "github": "https://github.com/akshansh2624",
