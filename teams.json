@@ -1,0 +1,29 @@
+{
+    "m1": {
+        "sr": "Team Member 1",
+        "urlToimage": "https://avatars.githubusercontent.com/u/124803206?v=4",
+        "name": "Harsh Chitaliya",
+        "mail": "harshchitaliya010@gmail.com",
+        "phone": "+91 9321694382",
+        "linkedIn": "https://www.linkedin.com/in/harshchitaliya/",
+        "github": "https://github.com/harshchi19"
+    },
+    "m2": {
+        "sr": "Team Member 2",
+        "urlToimage": "https://avatars.githubusercontent.com/u/143862038?v=4",
+        "name": "Yash Buddhadev",
+        "mail": "yashbuddhadev21@gmail.com",
+        "phone": "+91 8369306269",
+        "linkedIn": "https://www.linkedin.com/in/yash-buddhadev-889955289/",
+        "github": "https://github.com/buddhadevyash"
+    },
+    "m3": {
+        "sr": "Team Member 3",
+        "urlToimage": "https://avatars.githubusercontent.com/u/95264506?v=4",
+        "name": "Vatsal Kotha",
+        "mail": "vatsalkotha@gmail.com",
+        "phone": "+91 9137401776",
+        "linkedIn": "https://www.linkedin.com/in/vatsal-kotha/",
+        "github": "https://github.com/VatsalKotha"
+    }
+}
