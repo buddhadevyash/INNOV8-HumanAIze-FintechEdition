@@ -41,5 +41,9 @@ huggingface_hub
 python-dotenv
 SpeechRecognition
 gTTS
-
 wave
+pyttsx3==2.90
+pyaudio==0.2.14
+streamlit-webrtc
+audio_recorder_streamlit
+pydub
