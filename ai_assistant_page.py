@@ -273,4 +273,3 @@ def ai_assistant_page():
 if __name__ == "__main__":
     ai_assistant_page()
 
-
