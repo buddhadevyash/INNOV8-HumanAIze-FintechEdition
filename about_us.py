@@ -9,7 +9,7 @@ def about_us_page():
         "member1": {
             "name": "Harsh Chitaliya",
             "sr": "Team Member 1",
-            "phone": "9321694382",
+            "phone": "+91 9321694382",
             "mail": "harshchitaliya010@gmail.com",
             "linkedIn": "https://www.linkedin.com/in/harshchitaliya/",
             "github": "github.com/harshchi19",
@@ -18,7 +18,7 @@ def about_us_page():
         "member2": {
             "name": "Yash Buddhadev",
             "sr": "Team Member 2",
-            "phone": "8369306269",
+            "phone": "+91 8369306269",
             "mail": "yashbuddhadev21@gmail.com",
             "linkedIn": "https://www.linkedin.com/in/yash-buddhadev-889955289/",
             "github": "https://github.com/buddhadevyash",
@@ -27,7 +27,7 @@ def about_us_page():
         "member3": {
             "name": "Vatsal Kotha",
             "sr": "Team Member 3",
-            "phone": "9137401776",
+            "phone": "+91 9137401776",
             "mail": "vatsalkotha@gmail.com",
             "linkedIn": "https://www.linkedin.com/in/vatsal-kotha/",
             "github": "https://github.com/VatsalKotha",
@@ -36,7 +36,7 @@ def about_us_page():
         "akshansh": {
             "name": "Akshansh Dwivedi",
             "sr": "Team Member 4",
-            "phone": "8097949196",
+            "phone": "+91 8097949196",
             "mail": "akshansh2624@gmail.com",
             "linkedIn": "https://www.linkedin.com/in/akshansh2624",
             "github": "https://github.com/akshansh2624",
