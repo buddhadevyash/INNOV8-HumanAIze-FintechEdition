@@ -1,4 +1,4 @@
-# home.py
+#home.py
 
 import streamlit as st
 
@@ -35,7 +35,7 @@ def home_page():
             }
             .action-list {
                 font-size: 22px;
-                color: #3d85c6; /* Light teal for action items */
+                color: #a4d8d8; /* Light teal for action items */
                 margin-bottom: 20px;
                 list-style-type: none;
                 padding-left: 0;
@@ -50,6 +50,12 @@ def home_page():
                 color: #8892b0; /* Light blue-grey text for footer */
                 text-align: center;
             }
+            .motto {
+                font-size: 20px;
+                color: #ffa500; /* Orange color for the motto */
+                text-align: left;
+                margin: 20px 0;
+            }
         </style>
     """
     
@@ -58,6 +64,8 @@ def home_page():
     st.markdown("<h1 class='dashboard-title'>Welcome to the Insurance Dashboard</h1>", unsafe_allow_html=True)
     st.markdown("<p class='team-name'>Developed by Team Innov8</p>", unsafe_allow_html=True)
     
+    st.markdown("<p class='motto'>Our AI-driven platform provides personalized insurance plans, exclusive discounts, and expert financial advice, all based on your comprehensive fitness scores tracked monthly. Now get rewarded for maintaining a healthy lifestyle with SmartSure.</p>", unsafe_allow_html=True)
+
     st.markdown("<p class='dashboard-text'>You can perform the following actions here:</p>", unsafe_allow_html=True)
     st.markdown("""
     <ul class='action-list'>
@@ -67,8 +75,11 @@ def home_page():
         <li>Make Your Own Custom Insurance Plan</li>
     </ul>
     """, unsafe_allow_html=True)
-    
+
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("<p class='footer'>Made with ☕ and 💻 by Harsh, Yash, Vatsal & Akshansh</p>", unsafe_allow_html=True)
+    st.markdown("<p class='footer'>Made with ☕ and 💻 by Harsh, Vatsal, Yash & Akshansh</p>", unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    home_page()
