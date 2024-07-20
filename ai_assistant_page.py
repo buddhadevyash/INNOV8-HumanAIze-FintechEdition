@@ -292,6 +292,7 @@ from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import speech_recognition as sr
 from gtts import gTTS
+import tempfile
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, ClientSettings
 import av
 from pydub import AudioSegment
@@ -503,12 +504,13 @@ def ai_assistant_page():
 
     # Handle user input and generate responses
     user_input = st.text_input("Type your message here:", key="user_input")
-    col1, col2 = st.columns([0.5, 0.5])
+    col1, col2= st.columns([0.5, 0.5])
     with col1:
         send_button = st.button("Send")
     with col2:
         speak_button = st.button("Speak")
 
+  
     uploaded_file = st.file_uploader("Facing issues recording? Upload an audio file instead:", type=['wav', 'mp3', 'ogg', 'm4a', 'flac'])
 
     if uploaded_file is not None and not st.session_state.file_processed:
@@ -525,7 +527,7 @@ def ai_assistant_page():
             if transcribed_text:
                 st.write(f"Transcribed text: {transcribed_text}")
                 st.session_state.messages.append({"role": "user", "content": transcribed_text})
-                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data, names_data)
+                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 st.session_state.file_processed = True
             else:
@@ -559,7 +561,7 @@ def ai_assistant_page():
             transcribed_text = transcribe_audio(audio_data)
             if transcribed_text:
                 st.session_state.messages.append({"role": "user", "content": transcribed_text})
-                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data, names_data)
+                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 st.experimental_rerun()
             else:
