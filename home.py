@@ -35,7 +35,7 @@ def home_page():
             }
             .action-list {
                 font-size: 22px;
-                color: #64ffda; /* Light teal for action items */
+                color: #3d85c6; /* Light teal for action items */
                 margin-bottom: 20px;
                 list-style-type: none;
                 padding-left: 0;
@@ -71,4 +71,4 @@ def home_page():
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("<p class='footer'>Made with ☕ and 💻 by Harsh, Vatsal & Yash</p>", unsafe_allow_html=True)
+    st.markdown("<p class='footer'>Made with ☕ and 💻 by Harsh, Yash, Vatsal & Akshansh</p>", unsafe_allow_html=True)
