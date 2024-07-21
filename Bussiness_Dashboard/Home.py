@@ -71,24 +71,37 @@ def Home():
     total1, total2, total3, total4, total5 = st.columns(5, gap='small')
     with total1:
         st.info('Sum Investment', icon="💰")
-        st.metric(label="Sum TZS", value=f"{total_investment:,.0f}")
+        st.metric(label="Sum TZS", value=f"{total_investment:,.0f}", label_visibility="hidden", help="Sum Investment")
 
     with total2:
         st.info('Most Investment', icon="💰")
-        st.metric(label="Mode TZS", value=f"{investment_mode:,.0f}")
+        st.metric(label="Mode TZS", value=f"{investment_mode:,.0f}", label_visibility="hidden", help="Most Investment")
 
     with total3:
         st.info('Average', icon="💰")
-        st.metric(label="Average TZS", value=f"{investment_mean:,.0f}")
+        st.metric(label="Average TZS", value=f"{investment_mean:,.0f}", label_visibility="hidden", help="Average")
 
     with total4:
         st.info('Central Earnings', icon="💰")
-        st.metric(label="Median TZS", value=f"{investment_median:,.0f}")
+        st.metric(label="Median TZS", value=f"{investment_median:,.0f}", label_visibility="hidden", help="Central Earnings")
 
     with total5:
         st.info('Ratings', icon="💰")
-        st.metric(label="Rating", value=numerize(rating), help=f""" Total Rating: {rating} """)
+        st.metric(label="Rating", value=numerize(rating), label_visibility="hidden", help=f"Total Rating: {rating}")
+
     style_metric_cards(background_color="#000000", border_left_color="#ffffff", border_color="#000000", box_shadow="#ffffff")
+
+    # Add custom CSS to change text color to white
+    st.markdown("""
+    <style>
+    .white-text {
+        color: white !important;
+    }
+    .stMetricValue {
+        color: white !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     # Variable distribution Histogram
     with st.expander("DISTRIBUTIONS BY FREQUENCY"):
