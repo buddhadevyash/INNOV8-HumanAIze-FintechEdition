@@ -61,7 +61,13 @@ def home_page():
     st.markdown(custom_css, unsafe_allow_html=True)
 
     st.markdown("<h1 class='dashboard-title'>Welcome to the Insurance Dashboard</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='team-name'>Developed by Team Innov8</p>", unsafe_allow_html=True)
+    st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
+    st.markdown("<h3>Smartsure</h3>", unsafe_allow_html=True)
+    image_path = "Smartsure.jpeg"
+    if os.path.exists(image_path):
+        st.image(image_path, caption="Smartsure")
+    else:
+        st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
     
     st.markdown("<p class='motto'>Our AI-driven platform provides personalized insurance plans, exclusive discounts, and expert financial advice, all based on your comprehensive fitness scores tracked monthly. Now get rewarded for maintaining a healthy lifestyle with SmartSure.</p>", unsafe_allow_html=True)
 
@@ -75,13 +81,7 @@ def home_page():
     </ul>
     """, unsafe_allow_html=True)
 
-    st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
-    st.markdown("<h3>Smartsure</h3>", unsafe_allow_html=True)
-    image_path = "Smartsure.jpeg"
-    if os.path.exists(image_path):
-        st.image(image_path, caption="Smartsure")
-    else:
-        st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
+
 
     st.markdown("---")
     st.markdown("<p class='footer'>Made with ☕ and 💻 by Harsh, Vatsal, Yash & Akshansh</p>", unsafe_allow_html=True)
