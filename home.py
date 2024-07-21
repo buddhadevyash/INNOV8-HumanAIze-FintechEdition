@@ -83,6 +83,7 @@ def home_page():
 
         <img src='{image_url}' width='175'>
     </div>
+      <h3>Smartsure</h3>
     """, unsafe_allow_html=True)
     
     st.markdown("<p class='motto'>Our AI-driven platform provides personalized insurance plans, exclusive discounts, and expert financial advice, all based on your comprehensive fitness scores tracked monthly. Now get rewarded for maintaining a healthy lifestyle with SmartSure.</p>", unsafe_allow_html=True)
@@ -92,7 +93,7 @@ def home_page():
         <li>Interact with PolicyPal AI</li>
         <li>Check your Fitness Score and Claim Discounts</li>
         <li>Choose from Base Insurance Plans</li>
-        <li>Make Your Own Custom Insurance Plan</li
+        <li>Make Your Own Custom Insurance Plan</li>
          <li>Visit the dynamic Business Dashboard</li>
     </ul>
     """, unsafe_allow_html=True)
