@@ -80,7 +80,7 @@ def home_page():
     image_url = "https://i.ibb.co/3s7JppM/Insurance-logo.png"
     st.markdown(f"""
     <div class='center-content'>
-        <h3>Smartsure</h3>
+        <h3></h3>
         <img src='{image_url}' width='175'>
     </div>
     """, unsafe_allow_html=True)
