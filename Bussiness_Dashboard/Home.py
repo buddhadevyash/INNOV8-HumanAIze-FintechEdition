@@ -71,40 +71,41 @@ def Home():
     total1, total2, total3, total4, total5 = st.columns(5, gap='small')
     with total1:
         st.info('Sum Investment', icon="💰")
-        st.metric(label="Sum TZS", value=f"{total_investment:,.0f}", className="white-text")
+        st.metric(label="Sum TZS", value=f"{total_investment:,.0f}")
 
     with total2:
         st.info('Most Investment', icon="💰")
-        st.metric(label="Mode TZS", value=f"{investment_mode:,.0f}", className="white-text")
+        st.metric(label="Mode TZS", value=f"{investment_mode:,.0f}")
 
     with total3:
         st.info('Average', icon="💰")
-        st.metric(label="Average TZS", value=f"{investment_mean:,.0f}", className="white-text")
+        st.metric(label="Average TZS", value=f"{investment_mean:,.0f}")
 
     with total4:
         st.info('Central Earnings', icon="💰")
-        st.metric(label="Median TZS", value=f"{investment_median:,.0f}", className="white-text")
+        st.metric(label="Median TZS", value=f"{investment_median:,.0f}")
 
     with total5:
         st.info('Ratings', icon="💰")
-        st.metric(label="Rating", value=numerize(rating), help=f""" Total Rating: {rating} """, className="white-text")
+        st.metric(label="Rating", value=numerize(rating), help=f""" Total Rating: {rating} """)
 
     style_metric_cards(background_color="#000000", border_left_color="#ffffff", border_color="#000000", box_shadow="#ffffff")
 
     # Add custom CSS to change all text in metric cards to white
     st.markdown("""
     <style>
-    .white-text {
+    [data-testid="stMetricValue"] {
         color: white !important;
     }
-    .white-text .stMetricLabel {
+    [data-testid="stMetricLabel"] {
         color: white !important;
     }
-    .white-text .stMetricValue {
+    .stAlert {
         color: white !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
     }
-    .white-text .stMetricDelta {
-        color: white !important;
+    .stAlert svg {
+        fill: white !important;
     }
     div[data-testid="stMetricValue"] > div {
         color: white !important;
