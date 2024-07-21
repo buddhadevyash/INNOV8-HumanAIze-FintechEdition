@@ -10,35 +10,13 @@ import plotly.graph_objs as go
 # Set Streamlit options
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-# Function to detect theme and apply styles dynamically
-def apply_theme():
-    is_dark_theme = st.session_state["theme"] == "dark"
-    text_color = "#ffffff" if is_dark_theme else "#000000"
-    bg_color = "#333333" if is_dark_theme else "#ffffff"
-    grid_color = "#555555" if is_dark_theme else "#dddddd"
-    plot_bg_color = "rgba(0,0,0,0)" if is_dark_theme else "rgba(255,255,255,1)"
-    metric_bg_color = "#444444" if is_dark_theme else "#f0f2f6"
-    metric_border_color = "#ffffff" if is_dark_theme else "#000000"
-    return text_color, bg_color, grid_color, plot_bg_color, metric_bg_color, metric_border_color
-
-# Set initial theme
-if "theme" not in st.session_state:
-    st.session_state["theme"] = "light"
-
-# Toggle theme button
-if st.button("Toggle Theme"):
-    st.session_state["theme"] = "dark" if st.session_state["theme"] == "light" else "light"
-
-text_color, bg_color, grid_color, plot_bg_color, metric_bg_color, metric_border_color = apply_theme()
-
 # Centered header using HTML and CSS
 st.markdown(
-    f"""
+    """
     <style>
-    .centered-header {{
+    .centered-header {
         text-align: center;
-        color: {text_color};
-    }}
+    }
     </style>
     <h1 class="centered-header">SmartSure Business Analytics Dashboard 💰</h1>
     """,
@@ -110,11 +88,11 @@ def Home():
     with total5:
         st.info('Ratings', icon="💰")
         st.metric(label="Rating", value=numerize(rating), help=f""" Total Rating: {rating} """)
-    style_metric_cards(background_color=metric_bg_color, border_left_color=metric_border_color, border_color=metric_border_color, box_shadow="#F71938")
+    style_metric_cards(background_color="#000000", border_left_color="#ffffff", border_color="#000000", box_shadow="#ffffff")
 
     # Variable distribution Histogram
     with st.expander("DISTRIBUTIONS BY FREQUENCY"):
-        df.hist(figsize=(16, 8), color=text_color, zorder=2, rwidth=0.9, legend=['Investment'])
+        df.hist(figsize=(16, 8), color='#898784', zorder=2, rwidth=0.9, legend=['Investment'])
         st.pyplot()
 
 # Graphs
@@ -128,15 +106,15 @@ def graphs():
         y=investment_by_business_type.index,
         orientation="h",
         title="<b> INVESTMENT BY BUSINESS TYPE </b>",
-        color_discrete_sequence=["#00FF00"] * len(investment_by_business_type),
-        template="plotly_dark" if st.session_state["theme"] == "dark" else "plotly_white",
+        color_discrete_sequence=["#0083B8"] * len(investment_by_business_type),
+        template="plotly_white",
     )
     fig_investment.update_layout(
-        plot_bgcolor=plot_bg_color,
-        font=dict(color=text_color),
-        yaxis=dict(showgrid=True, gridcolor=grid_color),  # Show y-axis grid and set its color  
-        paper_bgcolor=plot_bg_color,  # Set paper background color to transparent
-        xaxis=dict(showgrid=True, gridcolor=grid_color),  # Show x-axis grid and set its color
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="black"),
+        yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show y-axis grid and set its color  
+        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
+        xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show x-axis grid and set its color
     )
 
     investment_state = df_selection.groupby(by=["State"]).count()[["Investment"]]
@@ -146,12 +124,12 @@ def graphs():
         y="Investment",
         orientation="v",
         title="<b> INVESTMENT BY STATE </b>",
-        color_discrete_sequence=["#00FF00"] * len(investment_state),
-        template="plotly_dark" if st.session_state["theme"] == "dark" else "plotly_white",
+        color_discrete_sequence=["#0083b8"] * len(investment_state),
+        template="plotly_white",
     )
     fig_state.update_layout(
         xaxis=dict(tickmode="linear"),
-        plot_bgcolor=plot_bg_color,
+        plot_bgcolor="rgba(0,0,0,0)",
         yaxis=(dict(showgrid=False))
     )
 
@@ -167,7 +145,7 @@ def graphs():
 
 # Function to show current earnings against expected target
 def Progressbar():
-    st.markdown(f"""<style>.stProgress > div > div > div > div {{ background-image: linear-gradient(to right, #00FF00 , #FFFF00)}}</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #99ff99 , #FFFF00)}</style>""", unsafe_allow_html=True)
     target = 3000000000
     current = df_selection["Investment"].sum()
     percent = round((current / target * 100))
@@ -176,7 +154,7 @@ def Progressbar():
     if percent > 100:
         st.subheader("Target done !")
     else:
-        st.write(f"you have {percent}% of {format(target, 'd')} TZS")
+        st.write("you have ", percent, "% ", "of ", (format(target, 'd')), "TZS")
         for percent_complete in range(percent):
             time.sleep(0.1)
             mybar.progress(percent_complete + 1, text=" Target Percentage")
@@ -206,23 +184,22 @@ fig2 = go.Figure(
     data=[go.Box(x=df['BusinessType'], y=df[feature_y])],
     layout=go.Layout(
         title=go.layout.Title(text="BUSINESS TYPE BY QUARTILES OF INVESTMENT"),
-        plot_bgcolor=plot_bg_color,  # Set plot background color to transparent
-        paper_bgcolor=plot_bg_color,  # Set paper background color to transparent
-        xaxis=dict(showgrid=True, gridcolor=grid_color),  # Show x-axis grid and set its color
-        yaxis=dict(showgrid=True, gridcolor=grid_color),  # Show y-axis grid and set its color
-        font=dict(color=text_color),  # Set text color
+        plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
+        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
+        xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show x-axis grid and set its color
+        yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show y-axis grid and set its color
+        font=dict(color='#cecdcd'),  # Set text color to black
     )
 )
 # Display the Plotly figure using Streamlit
 st.plotly_chart(fig2, use_container_width=True)
 
 # Theme
-hide_st_style = f""" 
+hide_st_style = """ 
 <style>
-#MainMenu {{visibility:hidden;}}
-footer {{visibility:hidden;}}
-header {{visibility:hidden;}}
-body {{background-color: {bg_color};}}
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
 </style>
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
