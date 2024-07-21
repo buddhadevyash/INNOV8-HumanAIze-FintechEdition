@@ -60,11 +60,11 @@ def home_page():
     
     st.markdown(custom_css, unsafe_allow_html=True)
 
-    st.markdown("<h1 class='dashboard-title'>Welcome to the Smartsure</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='dashboard-title'>Welcome to Smartsure</h1>", unsafe_allow_html=True)
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
     image_path = "Smartsure.jpeg"
     if os.path.exists(image_path):
-        st.image(image_path, caption="Smartsure", width=350)  # Adjust the width as needed
+        st.image(image_path, caption="Smartsure", width=175)  # Set the width to one-fourth of its original size
     else:
         st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
     
