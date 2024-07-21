@@ -80,7 +80,7 @@ def home_page():
     st.markdown("<h3>Smartsure</h3>", unsafe_allow_html=True)
     image_path = "Smartsure.jpeg"
     if os.path.exists(image_path):
-        st.image(image_path, caption="Random Forest")
+        st.image(image_path, caption="Smartsure")
     else:
         st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
 
