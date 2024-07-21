@@ -93,6 +93,7 @@ def home_page():
         <li>Check your Fitness Score and Claim Discounts</li>
         <li>Choose from Base Insurance Plans</li>
         <li>Make Your Own Custom Insurance Plan</li>
+        <li>Visit the dynamic Business Dashboard</li>
     </ul>
     """, unsafe_allow_html=True)
     st.markdown("---")
