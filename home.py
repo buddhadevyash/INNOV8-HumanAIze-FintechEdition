@@ -68,8 +68,8 @@ def home_page():
     st.markdown("<h1 class='dashboard-title'>Welcome to Smartsure</h1>", unsafe_allow_html=True)
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
     image_path = "Smartsure.jpeg"
-    if os.path.exists(image_path):
-        st.markdown(f"<div class='center-image'><img src='{image_path}' width='175'></div>", unsafe_allow_html=True)
+    if os.path.exists(Smartsure.jpeg):
+        st.markdown(f"<div class='center-image'><img src='{Smartsure.jpeg}' width='175'></div>", unsafe_allow_html=True)
     else:
         st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
     
