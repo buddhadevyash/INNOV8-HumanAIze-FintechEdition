@@ -55,6 +55,11 @@ def home_page():
                 text-align: left;
                 margin: 20px 0;
             }
+            .center-image {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         </style>
     """
     
@@ -64,7 +69,7 @@ def home_page():
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
     image_path = "Smartsure.jpeg"
     if os.path.exists(image_path):
-        st.image(image_path, caption="Smartsure", width=175)  # Set the width to one-fourth of its original size
+        st.markdown(f"<div class='center-image'><img src='{image_path}' width='175'></div>", unsafe_allow_html=True)
     else:
         st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
     
@@ -77,6 +82,7 @@ def home_page():
         <li>Check your Fitness Score and Claim Discounts</li>
         <li>Choose from Base Insurance Plans</li>
         <li>Make Your Own Custom Insurance Plan</li>
+        <li>Bussiness Dashboard</li>
     </ul>
     """, unsafe_allow_html=True)
 
