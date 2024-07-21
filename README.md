@@ -18,7 +18,7 @@ Welcome to SmartSure, a groundbreaking project designed to revolutionize the ins
 - [License](#license)
 
 ## Blog
-## [Read full project details here!](https://medium.com/@yashbuddhadev21/transforming-insurance-with-ai-revolutionizing-customer-experience-and-operational-efficiency-3ac30094eca7)
+## [Read full project details article here!](https://medium.com/@yashbuddhadev21/transforming-insurance-with-ai-revolutionizing-customer-experience-and-operational-efficiency-3ac30094eca7)
 
 ## Features
 
