@@ -1,7 +1,7 @@
-# Revolutionizing Insurance with SmartSure!
+# Revolutionizing Insurance with **SmartSure**!
 ![](https://i.ibb.co/3s7JppM/Insurance-logo.png)
 
-Welcome to SmartSure, a groundbreaking project designed to revolutionize the insurance industry through advanced AI technologies. This project was developed as part of Hack2Skill’s HumanAIze Hackathon <FinTech Edition> powered by YouData.ai.
+Welcome to **SmartSure**, a groundbreaking project designed to revolutionize the insurance industry through advanced AI technologies. This project was developed as part of **Hack2Skill’s HumanAIze Hackathon <FinTech Edition>** powered by **YouData.ai**.
 
 ## Table of Contents
 
