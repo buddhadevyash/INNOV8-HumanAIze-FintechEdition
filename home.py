@@ -75,7 +75,7 @@ def home_page():
     
     st.markdown(custom_css, unsafe_allow_html=True)
     st.markdown("<h1 class='dashboard-title'>Welcome to Smartsure</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
+   
     
     image_url = "https://i.ibb.co/3s7JppM/Insurance-logo.png"
     st.markdown(f"""
@@ -84,6 +84,7 @@ def home_page():
         <img src='{image_url}' width='175'>
     </div>
     """, unsafe_allow_html=True)
+     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
     
     st.markdown("<p class='motto'>Our AI-driven platform provides personalized insurance plans, exclusive discounts, and expert financial advice, all based on your comprehensive fitness scores tracked monthly. Now get rewarded for maintaining a healthy lifestyle with SmartSure.</p>", unsafe_allow_html=True)
     st.markdown("<p class='dashboard-text'>You can perform the following actions here:</p>", unsafe_allow_html=True)
