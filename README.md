@@ -16,10 +16,7 @@ Welcome to SmartSure, a groundbreaking project designed to revolutionize the ins
 - [Contributing](#contributing)
 - [License](#license)
 
-## Introduction
-
-Traditional insurance processes often involve lengthy paperwork, complex decision-making, and limited customer interaction. SmartSure harnesses the power of AI to streamline these processes, enhance customer engagement, and improve operational efficiency for insurance providers.
-![image](https://github.com/user-attachments/assets/6118a49a-09a9-4868-892c-3c9e29182361)
+## [Blog Link-]([URL](https://medium.com/@yashbuddhadev21/transforming-insurance-with-ai-revolutionizing-customer-experience-and-operational-efficiency-3ac30094eca7))
 
 ## Features
 
