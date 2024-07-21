@@ -283,7 +283,6 @@
 # if __name__ == "__main__":
 #     ai_assistant_page()
 
-
 import streamlit as st
 import pandas as pd
 import os
@@ -316,7 +315,7 @@ def load_data():
     if os.path.exists(csv_file_path):
         df = pd.read_csv(csv_file_path)
         for index, row in df.iterrows():
-            name = row['Name'].strip().lower()  
+            name = row['Name'].strip().lower()
             fitness_score = row['Fitness Score']
             discount = row['Discount']
             names_data[name] = (fitness_score, discount)
@@ -365,22 +364,20 @@ def generate_insurance_assistant_response(prompt_input, client, fine_tuning_data
             fitness_score, discount = names_data[name]
             return f"Hello {prompt_input}, your fitness score is {fitness_score}. Based on this, you get {discount}% discount."
         else:
+            if "what is" in prompt_input.lower() or "how" in prompt_input.lower() or "suggest" in prompt_input.lower():
+                messages = [
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": prompt_input}
+                ]
+                response = ""
+                for message in client.chat_completion(
+                        messages=messages,
+                        max_tokens=120,
+                        stream=True
+                ):
+                    response += message.choices[0].delta.content or ""
+                return response
             return "Name not found in our records. Please provide your fitness score."
-
-    messages = [
-        {"role": "system", "content": system_message},
-        {"role": "user", "content": prompt_input}
-    ]
-
-    response = ""
-    for message in client.chat_completion(
-            messages=messages,
-            max_tokens=120,
-            stream=True
-    ):
-        response += message.choices[0].delta.content or ""
-
-    return response
 
 # Function to transcribe audio
 def transcribe_audio(audio_data):
@@ -504,13 +501,12 @@ def ai_assistant_page():
 
     # Handle user input and generate responses
     user_input = st.text_input("Type your message here:", key="user_input")
-    col1, col2= st.columns([0.5, 0.5])
+    col1, col2 = st.columns([0.5, 0.5])
     with col1:
         send_button = st.button("Send")
     with col2:
         speak_button = st.button("Speak")
 
-  
     uploaded_file = st.file_uploader("Facing issues recording? Upload an audio file instead:", type=['wav', 'mp3', 'ogg', 'm4a', 'flac'])
 
     if uploaded_file is not None and not st.session_state.file_processed:
@@ -527,7 +523,7 @@ def ai_assistant_page():
             if transcribed_text:
                 st.write(f"Transcribed text: {transcribed_text}")
                 st.session_state.messages.append({"role": "user", "content": transcribed_text})
-                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
+                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data, names_data)
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 st.session_state.file_processed = True
             else:
@@ -561,7 +557,7 @@ def ai_assistant_page():
             transcribed_text = transcribe_audio(audio_data)
             if transcribed_text:
                 st.session_state.messages.append({"role": "user", "content": transcribed_text})
-                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data)
+                response = generate_insurance_assistant_response(transcribed_text, client, fine_tuning_data, fitness_discount_data, names_data)
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 st.experimental_rerun()
             else:
