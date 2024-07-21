@@ -10,14 +10,33 @@ import plotly.graph_objs as go
 # Set Streamlit options
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
+# Function to detect theme and apply styles dynamically
+def apply_theme():
+    is_dark_theme = st.session_state["theme"] == "dark"
+    text_color = "#ffffff" if is_dark_theme else "#000000"
+    bg_color = "#333333" if is_dark_theme else "#ffffff"
+    grid_color = "#555555" if is_dark_theme else "#dddddd"
+    plot_bg_color = "rgba(0,0,0,0)" if is_dark_theme else "rgba(255,255,255,1)"
+    return text_color, bg_color, grid_color, plot_bg_color
+
+# Set initial theme
+if "theme" not in st.session_state:
+    st.session_state["theme"] = "light"
+
+# Toggle theme button
+if st.button("Toggle Theme"):
+    st.session_state["theme"] = "dark" if st.session_state["theme"] == "light" else "light"
+
+text_color, bg_color, grid_color, plot_bg_color = apply_theme()
+
 # Centered header using HTML and CSS
 st.markdown(
-    """
+    f"""
     <style>
-    .centered-header {
+    .centered-header {{
         text-align: center;
-        color: #ffffff;
-    }
+        color: {text_color};
+    }}
     </style>
     <h1 class="centered-header">SmartSure Business Analytics Dashboard 💰</h1>
     """,
@@ -89,11 +108,11 @@ def Home():
     with total5:
         st.info('Ratings', icon="💰")
         st.metric(label="Rating", value=numerize(rating), help=f""" Total Rating: {rating} """)
-    style_metric_cards(background_color="#333333", border_left_color="#ffffff", border_color="#ffffff", box_shadow="#F71938")
+    style_metric_cards(background_color=bg_color, border_left_color=text_color, border_color=text_color, box_shadow="#F71938")
 
     # Variable distribution Histogram
     with st.expander("DISTRIBUTIONS BY FREQUENCY"):
-        df.hist(figsize=(16, 8), color='#ffffff', zorder=2, rwidth=0.9, legend=['Investment'])
+        df.hist(figsize=(16, 8), color=text_color, zorder=2, rwidth=0.9, legend=['Investment'])
         st.pyplot()
 
 # Graphs
@@ -108,14 +127,14 @@ def graphs():
         orientation="h",
         title="<b> INVESTMENT BY BUSINESS TYPE </b>",
         color_discrete_sequence=["#00FF00"] * len(investment_by_business_type),
-        template="plotly_dark",
+        template="plotly_dark" if st.session_state["theme"] == "dark" else "plotly_white",
     )
     fig_investment.update_layout(
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#ffffff"),
-        yaxis=dict(showgrid=True, gridcolor='#555555'),  # Show y-axis grid and set its color  
-        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
-        xaxis=dict(showgrid=True, gridcolor='#555555'),  # Show x-axis grid and set its color
+        plot_bgcolor=plot_bg_color,
+        font=dict(color=text_color),
+        yaxis=dict(showgrid=True, gridcolor=grid_color),  # Show y-axis grid and set its color  
+        paper_bgcolor=plot_bg_color,  # Set paper background color to transparent
+        xaxis=dict(showgrid=True, gridcolor=grid_color),  # Show x-axis grid and set its color
     )
 
     investment_state = df_selection.groupby(by=["State"]).count()[["Investment"]]
@@ -126,11 +145,11 @@ def graphs():
         orientation="v",
         title="<b> INVESTMENT BY STATE </b>",
         color_discrete_sequence=["#00FF00"] * len(investment_state),
-        template="plotly_dark",
+        template="plotly_dark" if st.session_state["theme"] == "dark" else "plotly_white",
     )
     fig_state.update_layout(
         xaxis=dict(tickmode="linear"),
-        plot_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor=plot_bg_color,
         yaxis=(dict(showgrid=False))
     )
 
@@ -146,7 +165,7 @@ def graphs():
 
 # Function to show current earnings against expected target
 def Progressbar():
-    st.markdown("""<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #00FF00 , #FFFF00)}</style>""", unsafe_allow_html=True)
+    st.markdown(f"""<style>.stProgress > div > div > div > div {{ background-image: linear-gradient(to right, #00FF00 , #FFFF00)}}</style>""", unsafe_allow_html=True)
     target = 3000000000
     current = df_selection["Investment"].sum()
     percent = round((current / target * 100))
@@ -155,7 +174,7 @@ def Progressbar():
     if percent > 100:
         st.subheader("Target done !")
     else:
-        st.write("you have ", percent, "% ", "of ", (format(target, 'd')), "TZS")
+        st.write(f"you have {percent}% of {format(target, 'd')} TZS")
         for percent_complete in range(percent):
             time.sleep(0.1)
             mybar.progress(percent_complete + 1, text=" Target Percentage")
@@ -185,22 +204,23 @@ fig2 = go.Figure(
     data=[go.Box(x=df['BusinessType'], y=df[feature_y])],
     layout=go.Layout(
         title=go.layout.Title(text="BUSINESS TYPE BY QUARTILES OF INVESTMENT"),
-        plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
-        paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
-        xaxis=dict(showgrid=True, gridcolor='#555555'),  # Show x-axis grid and set its color
-        yaxis=dict(showgrid=True, gridcolor='#555555'),  # Show y-axis grid and set its color
-        font=dict(color='#ffffff'),  # Set text color to white
+        plot_bgcolor=plot_bg_color,  # Set plot background color to transparent
+        paper_bgcolor=plot_bg_color,  # Set paper background color to transparent
+        xaxis=dict(showgrid=True, gridcolor=grid_color),  # Show x-axis grid and set its color
+        yaxis=dict(showgrid=True, gridcolor=grid_color),  # Show y-axis grid and set its color
+        font=dict(color=text_color),  # Set text color
     )
 )
 # Display the Plotly figure using Streamlit
 st.plotly_chart(fig2, use_container_width=True)
 
 # Theme
-hide_st_style = """ 
+hide_st_style = f""" 
 <style>
-#MainMenu {visibility:hidden;}
-footer {visibility:hidden;}
-header {visibility:hidden;}
+#MainMenu {{visibility:hidden;}}
+footer {{visibility:hidden;}}
+header {{visibility:hidden;}}
+body {{background-color: {bg_color};}}
 </style>
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
