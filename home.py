@@ -18,7 +18,7 @@ def home_page():
                 font-size: 36px;
                 font-weight: bold;
                 color: #ffa500;
-                margin-bottom: 20px;
+                margin-bottom: 10px;  /* Reduced from 20px to 10px */
             }
             .team-name {
                 font-size: 24px;
@@ -60,10 +60,10 @@ def home_page():
                 justify-content: center;
                 align-items: center;
                 text-align: center;
-                margin: 20px 0;
+                margin: 10px 0;  /* Reduced from 20px to 10px */
             }
             .center-content h3 {
-                margin-bottom: 10px;
+                margin-bottom: 5px;  /* Reduced from 10px to 5px */
                 color: #64ffda;
             }
             .center-content img {
@@ -74,13 +74,12 @@ def home_page():
     """
     
     st.markdown(custom_css, unsafe_allow_html=True)
-    st.markdown("<h1 class='dashboard-title'>Welcome to Smartsure</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='dashboard-title'>Welcome to Smartsure!</h1>", unsafe_allow_html=True)
    
     
     image_url = "https://i.ibb.co/3s7JppM/Insurance-logo.png"
     st.markdown(f"""
     <div class='center-content'>
-        <h3></h3>
         <img src='{image_url}' width='175'>
     </div>
     """, unsafe_allow_html=True)
