@@ -16,6 +16,7 @@ st.markdown(
     <style>
     .centered-header {
         text-align: center;
+        color: #ffffff;
     }
     </style>
     <h1 class="centered-header">SmartSure Business Analytics Dashboard 💰</h1>
@@ -88,11 +89,11 @@ def Home():
     with total5:
         st.info('Ratings', icon="💰")
         st.metric(label="Rating", value=numerize(rating), help=f""" Total Rating: {rating} """)
-    style_metric_cards(background_color="#FFFFFF", border_left_color="#686664", border_color="#000000", box_shadow="#F71938")
+    style_metric_cards(background_color="#333333", border_left_color="#ffffff", border_color="#ffffff", box_shadow="#F71938")
 
     # Variable distribution Histogram
     with st.expander("DISTRIBUTIONS BY FREQUENCY"):
-        df.hist(figsize=(16, 8), color='#898784', zorder=2, rwidth=0.9, legend=['Investment'])
+        df.hist(figsize=(16, 8), color='#ffffff', zorder=2, rwidth=0.9, legend=['Investment'])
         st.pyplot()
 
 # Graphs
@@ -106,15 +107,15 @@ def graphs():
         y=investment_by_business_type.index,
         orientation="h",
         title="<b> INVESTMENT BY BUSINESS TYPE </b>",
-        color_discrete_sequence=["#0083B8"] * len(investment_by_business_type),
-        template="plotly_white",
+        color_discrete_sequence=["#00FF00"] * len(investment_by_business_type),
+        template="plotly_dark",
     )
     fig_investment.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="black"),
-        yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show y-axis grid and set its color  
+        font=dict(color="#ffffff"),
+        yaxis=dict(showgrid=True, gridcolor='#555555'),  # Show y-axis grid and set its color  
         paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
-        xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show x-axis grid and set its color
+        xaxis=dict(showgrid=True, gridcolor='#555555'),  # Show x-axis grid and set its color
     )
 
     investment_state = df_selection.groupby(by=["State"]).count()[["Investment"]]
@@ -124,8 +125,8 @@ def graphs():
         y="Investment",
         orientation="v",
         title="<b> INVESTMENT BY STATE </b>",
-        color_discrete_sequence=["#0083b8"] * len(investment_state),
-        template="plotly_white",
+        color_discrete_sequence=["#00FF00"] * len(investment_state),
+        template="plotly_dark",
     )
     fig_state.update_layout(
         xaxis=dict(tickmode="linear"),
@@ -145,7 +146,7 @@ def graphs():
 
 # Function to show current earnings against expected target
 def Progressbar():
-    st.markdown("""<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #99ff99 , #FFFF00)}</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.stProgress > div > div > div > div { background-image: linear-gradient(to right, #00FF00 , #FFFF00)}</style>""", unsafe_allow_html=True)
     target = 3000000000
     current = df_selection["Investment"].sum()
     percent = round((current / target * 100))
@@ -186,9 +187,9 @@ fig2 = go.Figure(
         title=go.layout.Title(text="BUSINESS TYPE BY QUARTILES OF INVESTMENT"),
         plot_bgcolor='rgba(0, 0, 0, 0)',  # Set plot background color to transparent
         paper_bgcolor='rgba(0, 0, 0, 0)',  # Set paper background color to transparent
-        xaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show x-axis grid and set its color
-        yaxis=dict(showgrid=True, gridcolor='#cecdcd'),  # Show y-axis grid and set its color
-        font=dict(color='#cecdcd'),  # Set text color to black
+        xaxis=dict(showgrid=True, gridcolor='#555555'),  # Show x-axis grid and set its color
+        yaxis=dict(showgrid=True, gridcolor='#555555'),  # Show y-axis grid and set its color
+        font=dict(color='#ffffff'),  # Set text color to white
     )
 )
 # Display the Plotly figure using Streamlit
