@@ -364,7 +364,7 @@ def generate_insurance_assistant_response(prompt_input, client, fine_tuning_data
             fitness_score, discount = names_data[name]
             return f"Hello {prompt_input}, your fitness score is {fitness_score}. Based on this, you get {discount}% discount."
         else:
-            if "what is" in prompt_input.lower() or "how" in prompt_input.lower() or "suggest" in prompt_input.lower():
+            if "what is" in prompt_input.lower() or "how" in prompt_input.lower():
                 messages = [
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": prompt_input}
