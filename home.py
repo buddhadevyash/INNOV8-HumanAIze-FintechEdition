@@ -1,7 +1,12 @@
 #home.py
 
 import streamlit as st
-
+st.markdown("<h3>Smartsure</h3>", unsafe_allow_html=True)
+    image_path = "Random Forest.jpeg"
+    if os.path.exists(image_path):
+        st.image(image_path, caption="Random Forest")
+    else:
+        st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
 def home_page():
     custom_css = """
         <style>
