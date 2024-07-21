@@ -73,14 +73,14 @@ def home_page():
         </style>
     """
     
-   st.markdown(custom_css, unsafe_allow_html=True)
+    st.markdown(custom_css, unsafe_allow_html=True)
     st.markdown("<h1 class='dashboard-title'>Welcome to Smartsure</h1>", unsafe_allow_html=True)
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
     
     image_url = "https://i.ibb.co/3s7JppM/Insurance-logo.png"
     st.markdown(f"""
     <div class='center-content'>
-        <h3></h3>
+        <h3>Smartsure</h3>
         <img src='{image_url}' width='175'>
     </div>
     """, unsafe_allow_html=True)
@@ -93,7 +93,6 @@ def home_page():
         <li>Check your Fitness Score and Claim Discounts</li>
         <li>Choose from Base Insurance Plans</li>
         <li>Make Your Own Custom Insurance Plan</li>
-         <li>Visit the dynamic Business Dashboard</li>
     </ul>
     """, unsafe_allow_html=True)
     st.markdown("---")
