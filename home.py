@@ -55,6 +55,12 @@ def home_page():
                 text-align: left;
                 margin: 20px 0;
             }
+            .center-image {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 20px 0;
+            }
         </style>
     """
     
@@ -62,9 +68,15 @@ def home_page():
 
     st.markdown("<h1 class='dashboard-title'>Welcome to Smartsure</h1>", unsafe_allow_html=True)
     st.markdown("<p class='dashboard-text'>Select a page from the sidebar to get started!</p>", unsafe_allow_html=True)
+
     image_path = "Smartsure.jpeg"
     if os.path.exists(image_path):
-        st.image(image_path, caption="Smartsure", width=175)  # Set the width to one-fourth of its original size
+        # HTML and CSS for centering the image
+        st.markdown(f"""
+            <div class='center-image'>
+                <img src='{image_path}' alt='Smartsure' width='175'>
+            </div>
+        """, unsafe_allow_html=True)
     else:
         st.markdown("<p class='dashboard-text'>Image not found. Please check the file path.</p>", unsafe_allow_html=True)
     
