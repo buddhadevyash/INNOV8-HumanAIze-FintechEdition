@@ -12,6 +12,7 @@ Welcome to SmartSure, a groundbreaking project designed to revolutionize the ins
   - [Customizable Insurance Plan Generator](#customizable-insurance-plan-generator)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Active Contributors](#active-contributors)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -85,6 +86,15 @@ Once the application is running, you can explore the following features:
 - **Fitness Score Calculator:** Input your health metrics to calculate your fitness score and potential premium discounts.
 - **AI-Driven Base Plan Recommendations:** Get personalized insurance plan recommendations based on your user profile.
 - **Customizable Insurance Plan Generator:** Tailor an insurance plan to your specific needs and receive dynamic pricing instantly.
+
+### Active Contributors 🚀
+<hr>
+<p align="start">
+<a  href="[https://github.com/MihirRajeshPanchal/Final-Year-Project-Drone/graphs/contributors](https://github.com/buddhadevyash/INNOV8-HumanAIze-FintechEdition/graphs/contributors)">
+  <img src="https://contrib.rocks/image?repo=buddhadevyash/INNOV8-HumanAIze-FintechEdition"/>
+</a>
+</p>
+</br>
 
 ## Contributing
 
