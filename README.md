@@ -86,9 +86,12 @@ Once the application is running, you can explore the following features:
 - **AI-Driven Base Plan Recommendations:** Get personalized insurance plan recommendations based on your user profile.
 - **Customizable Insurance Plan Generator:** Tailor an insurance plan to your specific needs and receive dynamic pricing instantly.
 
-## Also we would like to extend our heartfelt gratitude to YouData.ai for providing us and all the participants with such apt and informative datasets, it wouldn't have been possible for us to develop such models without these insightful collection of data. Heres a folder link to all the datasets we have used from YouData.ai,
+## Also we would like to extend our heartfelt gratitude to YouData.ai for providing us and all the participants with such apt and informative datasets, it wouldn't have been possible for us to develop such models without these insightful collection of data. Heres a folder link to all the datasets we have used from YouData.ai.
+
 **Dataset Folder from YouData.ai:** https://datalink.youdata.ai/3kbn2nxa
+
 **The entire project is up and running, here's the link of the Streamlit Deployment:** https://innov8smartsure.streamlit.app/.
+
 **Link to the Demo Video:** https://drive.google.com/drive/folders/1dosfLK6HFvX-EtngrKTxC8XtXdx2_7gC
 
 ### Active Contributors 🚀
