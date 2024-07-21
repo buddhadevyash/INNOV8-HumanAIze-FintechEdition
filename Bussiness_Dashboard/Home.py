@@ -17,7 +17,9 @@ def apply_theme():
     bg_color = "#333333" if is_dark_theme else "#ffffff"
     grid_color = "#555555" if is_dark_theme else "#dddddd"
     plot_bg_color = "rgba(0,0,0,0)" if is_dark_theme else "rgba(255,255,255,1)"
-    return text_color, bg_color, grid_color, plot_bg_color
+    metric_bg_color = "#444444" if is_dark_theme else "#f0f2f6"
+    metric_border_color = "#ffffff" if is_dark_theme else "#000000"
+    return text_color, bg_color, grid_color, plot_bg_color, metric_bg_color, metric_border_color
 
 # Set initial theme
 if "theme" not in st.session_state:
@@ -27,7 +29,7 @@ if "theme" not in st.session_state:
 if st.button("Toggle Theme"):
     st.session_state["theme"] = "dark" if st.session_state["theme"] == "light" else "light"
 
-text_color, bg_color, grid_color, plot_bg_color = apply_theme()
+text_color, bg_color, grid_color, plot_bg_color, metric_bg_color, metric_border_color = apply_theme()
 
 # Centered header using HTML and CSS
 st.markdown(
@@ -108,7 +110,7 @@ def Home():
     with total5:
         st.info('Ratings', icon="💰")
         st.metric(label="Rating", value=numerize(rating), help=f""" Total Rating: {rating} """)
-    style_metric_cards(background_color=bg_color, border_left_color=text_color, border_color=text_color, box_shadow="#F71938")
+    style_metric_cards(background_color=metric_bg_color, border_left_color=metric_border_color, border_color=metric_border_color, box_shadow="#F71938")
 
     # Variable distribution Histogram
     with st.expander("DISTRIBUTIONS BY FREQUENCY"):
