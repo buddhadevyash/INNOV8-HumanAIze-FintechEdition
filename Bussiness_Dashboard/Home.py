@@ -7,8 +7,8 @@ import time
 from streamlit_extras.metric_cards import style_metric_cards
 import plotly.graph_objs as go
 
-# Set Streamlit options
-st.set_option('deprecation.showPyplotGlobalUse', False)
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Centered header using HTML and CSS
 st.markdown(
