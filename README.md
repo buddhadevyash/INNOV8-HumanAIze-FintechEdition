@@ -1,4 +1,4 @@
-# HumanAIze FinTech Edition Hackathon by Hack2skill & YouData.ai Winner!
+# HumanAIze FinTech Edition Hackathon Winner!
 # PS: Revolutionizing Insurance
 ![](https://i.ibb.co/3s7JppM/Insurance-logo.png)
 
